@@ -1,6 +1,6 @@
 ---
 title: "Activity 9"
-author: "Name"
+author: "Brice Kramer"
 output: github_document
 ---
 
@@ -15,7 +15,8 @@ In this activity, we will create a function for calculating the range of a numer
 To begin, we need `{tidyverse}` and `{gapminder}` (for a dataset to test our functions with) packages loaded.
 
 
-
+library(tidyverse)
+library(gapminder)
 
 ## Part I
 
@@ -60,7 +61,7 @@ smaller_value <- range_results[1]
 diff_values <- larger_value - smaller_value
 
 # could also simply do
-# diff_values <- range_results[2] - range_results[1]
+#diff_values <- range_results[2] - range_results[1]
 ```
 
 Now I see that `gapminder$lifeExp` is the only thing that changes whenever I want to calculate the range so I have an outline for my function!
@@ -93,8 +94,11 @@ Test this function to verify that it works.
 Below check this function using the `lifeExp` column of the `gapminder` dataset.
 Also, verify that it gets the correct result for `1:10` (a sequence of numbers starting at 1 and ending at 10, increasing by 1), `5:100`, `gapminder$pop` (the population of each country in the `gapminder` data set), and `gapminder$gdpPercap`.
 
-
-
+diff_range(gapminder$lifeExp)
+diff_range(1:10)
+diff_range(5:100)
+diff_range(gapminder$pop)
+diff_range(gapminder$gdpPercap)
 
 ### Your turn
 
@@ -110,17 +114,27 @@ Convince yourself that you know how to use it by being able to explain what the 
 
 Also, explore this function with different `probs`.
 
+quantile(gapminder$lifeExp, probs = c(0, 1))
 
 
 Once, you feel comfortable with the `quantile` function, create a function named `quantile_range` that calculates the statistical range.
 
+quantile_range <- function(x) {
+
+rng = quantile(x, probs = c(0,1))
+return(diff_range(rng))
+
+}
 
 
 Test your function to verify that it works.
 Below check this function using the `lifeExp` column of the `gapminder` dataset.
 Also, verify that it gets the correct result for `1:10` (a sequence of numbers starting at 1 and ending at 10, increasing by 1), `5:100`, `gapminder$pop` (the population of each country in the `gapminder` data set), and `gapminder$gdpPercap`.
 
-
+quantile_range(1:10)
+quantile_range(5:100)
+quantile_range(gapminder$pop)
+quantile_range(gapminder$gdpPercap)
 
 ![](README-img/noun_pause.png) **Planned Pause Point**: This is the end of Part 1 of this activity. You can use the rest of the class period working on your project. The rest of this activity will be completed in our next class session/at home.
 
@@ -136,6 +150,7 @@ When we write functions, we should also make sure that it fails when we expect i
 
 Below, check that our function breaks for each of the above tests.
 
+quantile_range(gapminder$country)
 
 For functions that will be used again, it is a good practice to add argument validity checks.
 
@@ -153,12 +168,31 @@ For functions that will be used again, it is a good practice to add argument val
 Explore the two argument validity checks by adding them to the beginning of your function above (one, then remove it and add the other) to check if the input `x` is a numeric vector (`is.numeric`).
 
 
+```{r quantile range function}
+quantile_range <- function(x) {
+if(!is.numeric(x)){
+stop("must be numeric values")
+}
+rng = quantile(x, probs = c(0,1))
+return(diff_range(rng))
+
+}
+```
 
 
 ### Extend your function
 
+
 Calculating the range of a set of data is convenient, but it would be nice if we could determine the range between certain quantiles too.
 For example, the interquartile range (*IQR = Q3 − Q1*).
+ 
+```{r quantial IQR}
+quantile_IQR <- function(x) {
+
+rng = quantile(x, probs = c(0.25,0.75))
+return(diff_range(rng))
+}
+```
  
 
 
@@ -173,6 +207,16 @@ Test your function with:
 
 Also test that your function breaks when it should.
 
+```{r qauntile range 2, have both range and IQR}
+quantile_range2 <- function(x,probs){
+  if probs == ignore.caps("range"){
+    return(diff_range(quantile_range(gapminder$lifeExp, probs = c(0.25, 0.75))))
+  }else if probs == ignore.caps("iqr") {
+    return(diff_range(quantile_range(gapminder$lifeExp, probs = c(0, 1))))
+  }
+}
+  
+```
 
 
 
